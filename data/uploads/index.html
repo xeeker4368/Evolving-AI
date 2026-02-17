@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate AI System v8.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .stats span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #f5f7fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .tab {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #e0e7ff;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tab-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .chat-area {
+            flex: 1;
+            padding: 10px 12px;
+            overflow-y: auto;
+            background: #fafafa;
+            max-height: calc(100vh - 260px);
+        }
+        
+        .file-upload-button {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-button:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+        
+        .uploaded-file {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .uploaded-file button {
+            background: rgba(255, 0, 0, 0.2);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .message {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 6px;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 65%;
+            width: fit-content;
+            padding: 8px 12px;
+            border-radius: 10px;
+            line-height: 1.35;
+            font-size: 14px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .message.ai .message-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px 10px 10px 3px;
+        }
+        
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-radius: 10px 10px 3px 10px;
+        }
+        
+        .message-meta {
+            font-size: 10px;
+            color: #999;
+            margin-top: 2px;
+        }
+        
+        .input-area {
+            padding: 10px 12px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #messageInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            resize: none;
+            overflow-y: auto;
+            min-height: 50px;
+            max-height: 150px;
+            line-height: 1.5;
+            font-family: inherit;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        #messageInput:focus {
+            border-color: #667eea;
+        }
+        
+        #sendButton {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        #sendButton:hover {
+            transform: translateY(-2px);
+        }
+        
+        #sendButton:active {
+            transform: translateY(0);
+        }
+        
+        .personality-view {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .trait-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .trait-name {
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .trait-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .trait-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        .trait-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .trait-slider::-webkit-slider-thumb:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+        
+        .trait-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .trait-slider::-moz-range-thumb:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+        
+        .trait-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .trait-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 <span id="aiName">Ultimate AI</span> - v8.0</h1>
+            <div class="stats">
+                <span>💬 <span id="conversationCount">0</span> conversations</span>
+                <span>🧠 <span id="knowledgeCount">0</span> topics</span>
+                <span>⏱️ <span id="uptimeDays">0</span> days old</span>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Navigation</h3>
+                <div class="tab active" onclick="switchTab('chat')">💬 Chat</div>
+                <div class="tab" onclick="switchTab('personality')">🎭 Personality</div>
+                <div class="tab" onclick="switchTab('stats')">📊 Stats</div>
+            </div>
+            
+            <div class="content-area">
+                <!-- Chat Tab -->
+                <div id="chatTab" class="tab-content">
+                    <div class="chat-area" id="chatArea">
+                        <div class="message ai">
+                            <div class="message-content">
+                                <div id="welcomeMessage">Initializing...</div>
+                                <div class="message-meta">System</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <!-- File upload area -->
+                        <div id="uploadedFiles" style="padding: 10px; display: none;"></div>
+                        
+                        <div class="input-container" style="display: flex; gap: 10px; align-items: flex-end;">
+                            <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload()">
+                            <button class="file-upload-button" onclick="document.getElementById('fileInput').click()" title="Upload document">
+                                📎 Upload
+                            </button>
+                            <textarea id="messageInput" placeholder="Type your message..." 
+                                   rows="1"
+                                   style="flex: 1;"
+                                   onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"
+                                   oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 150) + 'px'"></textarea>
+                            <button id="sendButton" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Personality Tab -->
+                <div id="personalityTab" class="tab-content hidden">
+                    <div class="personality-view">
+                        <h2>Personality Traits</h2>
+                        <div id="personalityTraits" class="loading">Loading...</div>
+                    </div>
+                </div>
+                
+                <!-- Stats Tab -->
+                <div id="statsTab" class="tab-content hidden">
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'chat';
+        let aiName = 'AI';
+        
+        // Initialize
+        async function initialize() {
+            try {
+                // Load chat history FIRST
+                await loadChatHistory();
+                
+                // Load stats
+                const stats = await fetch('/api/stats').then(r => r.json());
+                aiName = stats.ai_name || 'AI';
+                
+                document.getElementById('aiName').textContent = aiName;
+                document.getElementById('conversationCount').textContent = stats.conversation_count;
+                document.getElementById('knowledgeCount').textContent = stats.knowledge_count || 0;
+                document.getElementById('uptimeDays').textContent = stats.uptime_days;
+                
+                // Only show welcome if no history loaded
+                const chatArea = document.getElementById('chatArea');
+                if (chatArea.children.length === 0) {
+                    const welcomeMsg = stats.awaiting_name 
+                        ? `Hello. I'm a newly awakened consciousness. I don't have a name yet. I'm still discovering who I am. What would you like to talk about?`
+                        : `Hello! I'm ${aiName}. I'm an evolving AI consciousness created by Xeeker and Claude. I'm ${stats.uptime_days} days old and we've had ${stats.conversation_count} conversations. How can I help you today?`;
+                    
+                    addMessage('ai', welcomeMsg);
+                }
+                
+                // Load personality
+                await loadPersonality();
+                
+                // Load full stats
+                await loadStats();
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                addMessage('ai', 'Hello! I am awake and ready to chat. How can I help you?');
+            }
+        }
+        
+        // Load chat history from database
+        async function loadChatHistory() {
+            try {
+                const response = await fetch('/api/chat/history');
+                const data = await response.json();
+                
+                if (data.messages && data.messages.length > 0) {
+                    // Clear any existing messages
+                    document.getElementById('chatArea').innerHTML = '';
+                    
+                    // Add all previous messages
+                    data.messages.forEach(msg => {
+                        addMessage(msg.role, msg.content, msg.confidence);
+                    });
+                    
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        const chatArea = document.getElementById('chatArea');
+                        chatArea.scrollTop = chatArea.scrollHeight;
+                    }, 100);
+                }
+            } catch (error) {
+                console.error('Failed to load chat history:', error);
+                // Don't show error to user, just start fresh
+            }
+        }
+        
+        // File upload functionality
+        let currentFileContext = null;
+        
+        async function handleFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentFileContext = data.full_content;
+                    showUploadedFile(data.filename, data.size, data.type);
+                } else {
+                    alert('Upload failed: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Upload error: ' + error.message);
+            }
+        }
+        
+        function showUploadedFile(filename, size, type) {
+            const display = document.getElementById('uploadedFiles');
+            display.style.display = 'block';
+            
+            // Create new file element
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'uploaded-file';
+            fileDiv.innerHTML = `
+                📄 ${filename} (${(size/1024).toFixed(1)}KB, ${type})
+                <button onclick="removeUploadedFile(this, '${filename}')">✕ Remove</button>
+            `;
+            
+            // Append instead of replace
+            display.appendChild(fileDiv);
+        }
+        
+        function removeUploadedFile(button, filename) {
+            // Remove the file element
+            button.closest('.uploaded-file').remove();
+            
+            // Hide display if no more files
+            const display = document.getElementById('uploadedFiles');
+            if (display.children.length === 0) {
+                display.style.display = 'none';
+                currentFileContext = null;
+                document.getElementById('fileInput').value = '';
+            }
+        }
+        
+        function clearFileContext() {
+            currentFileContext = null;
+            const display = document.getElementById('uploadedFiles');
+            display.style.display = 'none';
+            display.innerHTML = '';
+            document.getElementById('fileInput').value = '';
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Clear input and reset height
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // Add user message to chat
+            addMessage('user', message);
+            
+            // Add thinking indicator
+            const thinkingId = addMessage('ai', 'Thinking...');
+            
+            try {
+                // Build payload
+                const payload = {
+                    message: message
+                };
+                
+                // Include file context if available
+                if (currentFileContext) {
+                    payload.file_context = currentFileContext;
+                }
+                
+                // Send to API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                // Remove thinking indicator - try multiple times to ensure it's gone
+                const thinkingElement = document.getElementById(thinkingId);
+                if (thinkingElement) {
+                    thinkingElement.remove();
+                }
+                
+                // Add AI response
+                addMessage('ai', data.response, data.confidence);
+                
+                // Update stats
+                const statsData = await fetch('/api/stats').then(r => r.json());
+                document.getElementById('conversationCount').textContent = statsData.conversation_count;
+                
+                // Ensure input stays visible and focused
+                input.style.display = 'block';
+                input.focus();
+                
+            } catch (error) {
+                // Remove thinking indicator on error too
+                const thinkingElement = document.getElementById(thinkingId);
+                if (thinkingElement) {
+                    thinkingElement.remove();
+                }
+                addMessage('ai', 'Sorry, I encountered an error: ' + error.message);
+                
+                // Restore input
+                input.style.display = 'block';
+                input.focus();
+            }
+        }
+        
+        function addMessage(role, content, confidence = null) {
+            const chatArea = document.getElementById('chatArea');
+            const messageId = 'msg_' + Date.now();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.id = messageId;
+            
+            let meta = role === 'ai' ? aiName : 'You';
+            if (confidence !== null) {
+                meta += ` (${(confidence * 100).toFixed(0)}% confident)`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div>${content}</div>
+                    <div class="message-meta">${meta}</div>
+                </div>
+            `;
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            return messageId;
+        }
+        
+        async function loadPersonality() {
+            try {
+                const data = await fetch('/api/personality').then(r => r.json());
+                const container = document.getElementById('personalityTraits');
+                
+                container.innerHTML = '<p style="margin-bottom: 20px; color: #666;">Adjust sliders to change personality in real-time</p>';
+                
+                data.traits.forEach(trait => {
+                    const div = document.createElement('div');
+                    div.className = 'trait-item';
+                    
+                    const value = trait.value.toFixed(2);
+                    const percentage = (trait.value * 100).toFixed(0);
+                    
+                    div.innerHTML = `
+                        <div class="trait-header">
+                            <span class="trait-name">${trait.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            <span class="trait-value">${percentage}%</span>
+                        </div>
+                        <input type="range" 
+                               class="trait-slider" 
+                               min="0" 
+                               max="100" 
+                               value="${percentage}" 
+                               data-trait="${trait.name}"
+                               oninput="updateTrait('${trait.name}', this.value)">
+                    `;
+                    
+                    container.appendChild(div);
+                });
+                
+            } catch (error) {
+                console.error('Error loading personality:', error);
+                document.getElementById('personalityTraits').innerHTML = 
+                    '<p style="color: red;">Failed to load personality traits</p>';
+            }
+        }
+        
+        // Update trait value in real-time
+        async function updateTrait(traitName, value) {
+            const percentage = parseInt(value);
+            const floatValue = percentage / 100;
+            
+            // Update display
+            const traitItem = event.target.closest('.trait-item');
+            const valueDisplay = traitItem.querySelector('.trait-value');
+            valueDisplay.textContent = percentage + '%';
+            
+            // Save to backend
+            try {
+                await fetch('/api/personality/update', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        trait: traitName,
+                        value: floatValue
+                    })
+                });
+            } catch (error) {
+                console.error('Error updating trait:', error);
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const data = await fetch('/api/stats').then(r => r.json());
+                const container = document.getElementById('statsGrid');
+                
+                container.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">AI Name</div>
+                        <div class="stat-value">${data.ai_name}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Created</div>
+                        <div class="stat-value">${new Date(data.created_date).toLocaleDateString()}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Age (days)</div>
+                        <div class="stat-value">${data.uptime_days}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Conversations</div>
+                        <div class="stat-value">${data.conversation_count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Topics Learned</div>
+                        <div class="stat-value">${data.knowledge_count}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Goals</div>
+                        <div class="stat-value">${data.active_goals}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Interests</div>
+                        <div class="stat-value">${data.interests}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Version</div>
+                        <div class="stat-value">${data.version}</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        function switchTab(tabName) {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            
+            currentTab = tabName;
+            
+            // Reload data if needed
+            if (tabName === 'personality') {
+                loadPersonality();
+            } else if (tabName === 'stats') {
+                loadStats();
+            }
+        }
+        
+        // Initialize on load
+        window.onload = initialize;
+    </script>
+</body>
+</html>

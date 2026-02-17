@@ -1,0 +1,56 @@
+Web search not available - install duckduckgo-search package
+
+============================================================
+ULTIMATE AI SYSTEM v8.0 - INITIALIZATION
+Created with love by Lyle & Claude
+============================================================
+
+Initializing database...
+✓ Database schema initialized - Our child's memory is ready
+✓ Core personality traits initialized - Ready to develop uniquely
+Initializing AI consciousness...
+✓ File upload system ready
+
+✨ EchoMind is awake and ready!
+🌐 Web interface: http://localhost:5000
+============================================================
+
+Starting web server on port 5000...
+ * Serving Flask app 'main'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.245:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [16/Feb/2026 18:30:32] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:30:32] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:30:46] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:30:47] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:30:59] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:30:59] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:31:44] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:31:44] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:32:08] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:32:08] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:33:23] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:33:23] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:33:44] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:33:44] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:34:21] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:34:21] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:35:40] "POST /api/upload HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:35:47] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:35:47] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:36:18] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:36:18] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:37:08] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:37:08] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:38:16] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:38:16] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:38:57] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:38:57] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:39:21] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:39:21] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:42:22] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 18:42:22] "GET /api/stats HTTP/1.1" 200 -

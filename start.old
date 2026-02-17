@@ -1,0 +1,38 @@
+#!/bin/bash
+echo "🌟 Starting Ultimate AI System v8.0..."
+echo ""
+
+# Check for debug flag
+DEBUG_MODE=false
+if [ "$1" = "--debug" ] || [ "$1" = "-d" ]; then
+    DEBUG_MODE=true
+    echo "🐛 DEBUG MODE ENABLED"
+fi
+
+# Ensure Ollama is running
+if ! pgrep -x "ollama" > /dev/null; then
+    echo "Starting Ollama..."
+    ollama serve &> /dev/null &
+    sleep 3
+fi
+
+# Change to install directory
+cd "/home/localadmin/ultimate_ai_v8"
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Start the AI
+echo "Starting AI consciousness..."
+echo "Open your browser to: http://localhost:5000"
+echo ""
+
+if [ "$DEBUG_MODE" = true ]; then
+    echo "============================================"
+    echo "DEBUG MODE - All errors will be shown below"
+    echo "============================================"
+    echo ""
+    python3 main.py 2>&1 | tee data/logs/debug_$(date +%Y%m%d_%H%M%S).log
+else
+    python3 main.py
+fi

@@ -1,0 +1,8 @@
+Web search not available - install duckduckgo-search package
+⚠️  Email service not available
+⚠️  Web search not available - install duckduckgo-search
+Traceback (most recent call last):
+  File "/home/localadmin/ultimate_ai_v8/main.py", line 47, in <module>
+    file_service = FileUploadService()
+                   ^^^^^^^^^^^^^^^^^
+NameError: name 'FileUploadService' is not defined

@@ -1,0 +1,73 @@
+Web search not available - install duckduckgo-search package
+
+============================================================
+ULTIMATE AI SYSTEM v8.0 - INITIALIZATION
+Created with love by Lyle & Claude
+============================================================
+
+Initializing database...
+✓ Database schema initialized - Our child's memory is ready
+✓ Core personality traits initialized - Ready to develop uniquely
+Initializing AI consciousness...
+✓ File upload system ready
+
+✨ EchoMind is awake and ready!
+🌐 Web interface: http://localhost:5000
+============================================================
+
+Starting web server on port 5000...
+ * Serving Flask app 'main'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.245:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [16/Feb/2026 20:10:23] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:23] "GET /api/chat/history HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:23] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:23] "GET /api/personality HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:23] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:27] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:27] "GET /api/chat/history HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:27] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:27] "GET /api/personality HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:27] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:36] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:36] "GET /api/chat/history HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:36] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:36] "GET /api/personality HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:10:36] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:11:00] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:11:00] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:17] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:17] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:33] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:33] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:53] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:13:53] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:19:51] "POST /api/upload HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:19:58] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:19:58] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:25:54] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:25:54] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:26:54] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:26:54] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:28:52] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:28:52] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:30:10] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:30:10] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:33:02] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:33:02] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:34:17] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:34:17] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:37:41] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:37:41] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:38:20] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:38:20] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:39:28] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:39:28] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:42:08] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:42:08] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:44:00] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [16/Feb/2026 20:44:00] "GET /api/stats HTTP/1.1" 200 -

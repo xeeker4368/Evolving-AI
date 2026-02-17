@@ -1,0 +1,465 @@
+"""
+Ultimate AI System v8.0 - Main Web Server
+Created with love by Xeeker & Claude
+
+COMPLETE VERSION with all features:
+- Email integration
+- Config management
+- Export functionality
+- Web search
+- Better debugging
+"""
+
+from flask import Flask, render_template, request, jsonify, send_file
+from flask_cors import CORS
+import sys
+import os
+from datetime import datetime
+import json
+import io
+
+# Add src to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+
+from core.ai_engine import AIEngine
+from services.file_upload import FileUploadService
+
+# Try to import optional services
+try:
+    from services.email_service import EmailService
+    EMAIL_AVAILABLE = True
+except ImportError:
+    EMAIL_AVAILABLE = False
+    print("⚠️  Email service not available")
+
+try:
+    from services.web_search import WebSearchService
+    SEARCH_AVAILABLE = True
+except ImportError:
+    SEARCH_AVAILABLE = False
+    print("⚠️  Web search not available - install duckduckgo-search")
+
+app = Flask(__name__, template_folder='web/templates')
+CORS(app)
+
+# Initialize services
+ai_engine = AIEngine()
+file_service = FileUploadService()
+email_service = EmailService() if EMAIL_AVAILABLE else None
+
+print("=" * 60)
+print("🌟 Ultimate AI System v8.0 Starting...")
+print("=" * 60)
+print(f"✅ AI Engine: Ready ({ai_engine.ai_name or 'Unnamed'})")
+print(f"✅ File Upload: Ready")
+print(f"{'✅' if EMAIL_AVAILABLE else '❌'} Email Service: {'Ready' if EMAIL_AVAILABLE else 'Not available'}")
+print(f"{'✅' if SEARCH_AVAILABLE else '❌'} Web Search: {'Ready' if SEARCH_AVAILABLE else 'Not installed'}")
+print("=" * 60)
+
+
+@app.route('/')
+def index():
+    """Main page"""
+    return render_template('index_COMPLETE_FIXED.html')
+
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """Chat endpoint"""
+    try:
+        data = request.json
+        message = data.get('message', '')
+        file_context = data.get('file_context')
+        
+        print(f"\n[CHAT] User: {message[:50]}...")
+        
+        context = {}
+        if file_context:
+            context['file_context'] = file_context
+            print(f"[CHAT] With file context")
+        
+        response, confidence = ai_engine.chat(message, context)
+        
+        print(f"[CHAT] AI ({confidence*100:.0f}%): {response[:50]}...")
+        
+        return jsonify({
+            'response': response,
+            'confidence': confidence,
+            'ai_name': ai_engine.ai_name
+        })
+    except Exception as e:
+        print(f"[ERROR] Chat error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/chat/history', methods=['GET'])
+def chat_history():
+    """Get chat history"""
+    try:
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT role, content, timestamp
+            FROM chat_history
+            ORDER BY timestamp ASC
+            LIMIT 50
+        """)
+        
+        history = []
+        for row in cursor.fetchall():
+            history.append({
+                'role': row[0],
+                'content': row[1],
+                'timestamp': row[2]
+            })
+        
+        return jsonify({'history': history})
+    except Exception as e:
+        print(f"[ERROR] History error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/personality', methods=['GET'])
+def get_personality():
+    """Get personality traits"""
+    try:
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT trait_name, trait_value 
+            FROM personality_traits 
+            WHERE is_active=1
+        """)
+        
+        traits = {}
+        for row in cursor.fetchall():
+            traits[row[0]] = row[1]
+        
+        return jsonify({'traits': traits})
+    except Exception as e:
+        print(f"[ERROR] Personality error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/personality/update', methods=['POST'])
+def update_personality():
+    """Update personality trait"""
+    try:
+        data = request.json
+        trait_name = data.get('trait')
+        new_value = float(data.get('value'))
+        
+        if not trait_name or new_value < 0 or new_value > 1:
+            return jsonify({'error': 'Invalid input'}), 400
+        
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            UPDATE personality_traits 
+            SET trait_value=?, last_updated=? 
+            WHERE trait_name=? AND is_active=1
+        """, (new_value, datetime.now().isoformat(), trait_name))
+        
+        ai_engine.db.get_connection().commit()
+        
+        print(f"[PERSONALITY] Updated {trait_name} to {new_value*100:.0f}%")
+        
+        return jsonify({'success': True, 'trait': trait_name, 'value': new_value})
+    except Exception as e:
+        print(f"[ERROR] Update trait error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/stats', methods=['GET'])
+def get_stats():
+    """Get statistics"""
+    try:
+        cursor = ai_engine.db.get_connection().cursor()
+        
+        # Conversation count
+        cursor.execute("SELECT COUNT(*) FROM chat_history WHERE role='user'")
+        conversation_count = cursor.fetchone()[0]
+        
+        # Knowledge count
+        cursor.execute("SELECT COUNT(*) FROM knowledge_base")
+        knowledge_count = cursor.fetchone()[0]
+        
+        # Topics count
+        cursor.execute("SELECT COUNT(DISTINCT topic) FROM knowledge_base")
+        topics_count = cursor.fetchone()[0]
+        
+        # Days old
+        cursor.execute("SELECT created_date FROM ai_identity WHERE ai_name=?", (ai_engine.ai_name,))
+        row = cursor.fetchone()
+        days_old = 0
+        if row and row[0]:
+            created = datetime.fromisoformat(row[0])
+            days_old = (datetime.now() - created).days
+        
+        # Average confidence
+        cursor.execute("SELECT AVG(confidence) FROM chat_history WHERE role='ai'")
+        avg_confidence = cursor.fetchone()[0] or 0.5
+        
+        return jsonify({
+            'ai_name': ai_engine.ai_name,
+            'conversation_count': conversation_count,
+            'knowledge_count': knowledge_count,
+            'topics_count': topics_count,
+            'days_old': days_old,
+            'avg_confidence': avg_confidence,
+            'files_processed': 0  # TODO: track file uploads
+        })
+    except Exception as e:
+        print(f"[ERROR] Stats error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    """File upload endpoint"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'Empty filename'}), 400
+        
+        print(f"[UPLOAD] Processing: {file.filename}")
+        
+        success, context_or_error = file_service.save_upload(file)
+        
+        if success:
+            print(f"[UPLOAD] Success: {file.filename}")
+            return jsonify({
+                'success': True,
+                'context': context_or_error,
+                'filename': file.filename
+            })
+        else:
+            print(f"[UPLOAD] Failed: {context_or_error}")
+            return jsonify({'error': context_or_error}), 500
+    except Exception as e:
+        print(f"[ERROR] Upload error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ===== EMAIL ENDPOINTS =====
+
+@app.route('/api/email/test', methods=['POST'])
+def test_email():
+    """Test email configuration"""
+    if not EMAIL_AVAILABLE:
+        return jsonify({'success': False, 'message': 'Email service not available'}), 400
+    
+    try:
+        config = request.json
+        email_service = EmailService(config)
+        success, message = email_service.test_connection()
+        
+        print(f"[EMAIL] Test: {message}")
+        
+        return jsonify({'success': success, 'message': message})
+    except Exception as e:
+        print(f"[ERROR] Email test error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/api/email/send', methods=['POST'])
+def send_email():
+    """Send email"""
+    if not EMAIL_AVAILABLE:
+        return jsonify({'success': False, 'message': 'Email not available'}), 400
+    
+    try:
+        data = request.json
+        subject = data.get('subject', '')
+        body = data.get('body', '')
+        
+        success, message = email_service.send_email(subject, body)
+        
+        print(f"[EMAIL] Send: {message}")
+        
+        return jsonify({'success': success, 'message': message})
+    except Exception as e:
+        print(f"[ERROR] Email send error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/api/email/summary/<summary_type>', methods=['POST'])
+def send_summary(summary_type):
+    """Send daily summary"""
+    if not EMAIL_AVAILABLE:
+        return jsonify({'success': False, 'message': 'Email not available'}), 400
+    
+    try:
+        success, message = email_service.send_daily_summary(ai_engine, summary_type)
+        
+        print(f"[EMAIL] Summary ({summary_type}): {message}")
+        
+        return jsonify({'success': success, 'message': message})
+    except Exception as e:
+        print(f"[ERROR] Summary error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+# ===== WEB SEARCH ENDPOINTS =====
+
+@app.route('/api/search/status', methods=['GET'])
+def search_status():
+    """Check web search availability"""
+    return jsonify({
+        'available': SEARCH_AVAILABLE,
+        'message': 'Web search ready' if SEARCH_AVAILABLE else 'Install duckduckgo-search package'
+    })
+
+
+@app.route('/api/search/test', methods=['GET'])
+def test_search():
+    """Test web search"""
+    if not SEARCH_AVAILABLE:
+        return jsonify({'success': False, 'message': 'Web search not installed'}), 400
+    
+    try:
+        if ai_engine.web_search:
+            results = ai_engine.web_search.search('test query', max_results=3)
+            return jsonify({
+                'success': True,
+                'results': results,
+                'count': len(results)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Web search not initialized'})
+    except Exception as e:
+        print(f"[ERROR] Search test error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+# ===== EXPORT ENDPOINTS =====
+
+@app.route('/api/export/conversations', methods=['GET'])
+def export_conversations():
+    """Export conversations"""
+    try:
+        format_type = request.args.get('format', 'json')
+        
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT role, content, timestamp, confidence
+            FROM chat_history
+            ORDER BY timestamp ASC
+        """)
+        
+        conversations = []
+        for row in cursor.fetchall():
+            conversations.append({
+                'role': row[0],
+                'content': row[1],
+                'timestamp': row[2],
+                'confidence': row[3]
+            })
+        
+        if format_type == 'json':
+            output = json.dumps(conversations, indent=2)
+            mimetype = 'application/json'
+        elif format_type == 'txt':
+            lines = []
+            for msg in conversations:
+                lines.append(f"[{msg['timestamp']}] {msg['role'].upper()}: {msg['content']}\n")
+            output = '\n'.join(lines)
+            mimetype = 'text/plain'
+        elif format_type == 'md':
+            lines = [f"# Conversation History - {ai_engine.ai_name}\n\n"]
+            for msg in conversations:
+                role_icon = '🧑' if msg['role'] == 'user' else '🤖'
+                lines.append(f"## {role_icon} {msg['role'].title()}\n\n{msg['content']}\n\n")
+            output = '\n'.join(lines)
+            mimetype = 'text/markdown'
+        else:
+            return jsonify({'error': 'Invalid format'}), 400
+        
+        print(f"[EXPORT] Conversations as {format_type}: {len(conversations)} messages")
+        
+        return send_file(
+            io.BytesIO(output.encode()),
+            mimetype=mimetype,
+            as_attachment=True,
+            download_name=f'conversations_{datetime.now().strftime("%Y%m%d")}.{format_type}'
+        )
+    except Exception as e:
+        print(f"[ERROR] Export error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/export/knowledge', methods=['GET'])
+def export_knowledge():
+    """Export knowledge base"""
+    try:
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT topic, content, confidence, learned_date
+            FROM knowledge_base
+            ORDER BY learned_date DESC
+        """)
+        
+        knowledge = []
+        for row in cursor.fetchall():
+            knowledge.append({
+                'topic': row[0],
+                'content': row[1],
+                'confidence': row[2],
+                'learned_date': row[3]
+            })
+        
+        output = json.dumps(knowledge, indent=2)
+        
+        print(f"[EXPORT] Knowledge: {len(knowledge)} items")
+        
+        return send_file(
+            io.BytesIO(output.encode()),
+            mimetype='application/json',
+            as_attachment=True,
+            download_name=f'knowledge_{datetime.now().strftime("%Y%m%d")}.json'
+        )
+    except Exception as e:
+        print(f"[ERROR] Export knowledge error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/export/personality', methods=['GET'])
+def export_personality():
+    """Export personality history"""
+    try:
+        cursor = ai_engine.db.get_connection().cursor()
+        cursor.execute("""
+            SELECT timestamp, trait_name, old_value, new_value, change_reason
+            FROM personality_history
+            ORDER BY timestamp DESC
+        """)
+        
+        history = []
+        for row in cursor.fetchall():
+            history.append({
+                'timestamp': row[0],
+                'trait': row[1],
+                'old_value': row[2],
+                'new_value': row[3],
+                'reason': row[4]
+            })
+        
+        output = json.dumps(history, indent=2)
+        
+        print(f"[EXPORT] Personality history: {len(history)} changes")
+        
+        return send_file(
+            io.BytesIO(output.encode()),
+            mimetype='application/json',
+            as_attachment=True,
+            download_name=f'personality_{datetime.now().strftime("%Y%m%d")}.json'
+        )
+    except Exception as e:
+        print(f"[ERROR] Export personality error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+if __name__ == '__main__':
+    print("\n🚀 Starting server on http://localhost:5000")
+    print("Press CTRL+C to quit\n")
+    app.run(host='0.0.0.0', port=5000, debug=False)
